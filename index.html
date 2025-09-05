@@ -3,107 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CODE STORE</title>
+<title>💻 CODE STORE</title>
 <style>
-body { font-family: Arial, sans-serif; background:#111; color:#eee; text-align:center; }
-h1 { color:#0ff; margin-top:20px; }
-button { margin:5px; padding:10px 20px; font-size:16px; cursor:pointer; border:none; border-radius:8px; background:linear-gradient(90deg,#0ff,#f0f,#0ff); color:#111; transition:0.3s; }
-button:hover { transform:scale(1.1); }
-#adminPanel { display:none; margin-top:20px; background:#222; padding:20px; border-radius:10px; }
-.lesson { margin:10px; padding:10px; background:#222; border-radius:8px; display:flex; justify-content:space-between; width:300px; margin-left:auto; margin-right:auto; }
-.lesson span { cursor:pointer; color:#0ff; }
-#iban { font-weight:bold; }
+  body { font-family: Arial, sans-serif; background: #0f0f0f; color: #fff; margin:0; padding:0; }
+  h1 { text-align:center; margin-top:30px; color:#0ff; text-shadow:0 0 10px #0ff; }
+  .categories { display:flex; flex-wrap:wrap; justify-content:center; margin:20px 0; }
+  .cat-btn { margin:10px; padding:15px 25px; font-size:18px; cursor:pointer; border:none; border-radius:10px;
+             background: linear-gradient(45deg,#ff00ff,#00ffff); color:#000; font-weight:bold; transition:0.3s; }
+  .cat-btn:hover { transform:scale(1.1); box-shadow:0 0 15px #0ff; }
+  .section { display:none; text-align:center; margin-top:20px; }
+  .lesson { margin:10px 0; }
+  button { padding:10px 20px; margin-left:10px; cursor:pointer; border:none; border-radius:5px; }
+  #iban { font-weight:bold; color:#0ff; cursor:pointer; }
+  #adminPanel { background:#111; padding:20px; margin:20px auto; width:90%; max-width:500px; border:2px solid #0ff; border-radius:10px; display:none; text-align:center; }
+  input { padding:10px; margin:5px 0; width:80%; border-radius:5px; border:none; }
+  .neon-admin-btn { position:fixed; bottom:20px; right:20px; padding:15px 20px; font-size:16px;
+                     background: linear-gradient(45deg,#ff0,#0ff,#f0f); color:#000; border:none; border-radius:10px;
+                     cursor:pointer; text-shadow:0 0 5px #fff; animation: glow 2s infinite alternate; display:none; }
+  @keyframes glow { 0% { box-shadow:0 0 5px #fff; } 100% { box-shadow:0 0 20px #0ff; } }
 </style>
 </head>
 <body>
 
 <h1>💻 CODE STORE</h1>
-<p>KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!</p>
-<p>İstediğiniz kodları görüntülemek ve satın almak için aşağıdaki kategorilere göz atabilirsiniz.</p>
+<p style="text-align:center;">KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!<br>İstediğiniz kodları görüntülemek ve satın almak için kategorilere göz atabilirsiniz.</p>
 
-<div id="categories"></div>
-<div id="lessonsList"></div>
-
-<h2>💳 Satın Alma</h2>
-<p>IBAN: <span id="iban">TR98000670100000022363236</span> <button onclick="copyIban()">Kopyala</button></p>
-<p>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</p>
-
-<div id="adminPanel">
-<h2>🔑 Admin Paneli</h2>
-<input type="text" id="lessonName" placeholder="Kod adı">
-<select id="lessonCategory">
-  <option>JavaScript</option>
-  <option>Python</option>
-  <option>HTML/CSS</option>
-  <option>Java</option>
-  <option>Office</option>
-</select>
-<input type="text" id="lessonPDF" placeholder="Dosya adı (kodlar/ klasörü içinde)">
-<button onclick="addLesson()">Kod Ekle</button>
+<div class="categories">
+  <button class="cat-btn" onclick="showLessons('JavaScript')">JavaScript</button>
+  <button class="cat-btn" onclick="showLessons('Python')">Python</button>
+  <button class="cat-btn" onclick="showLessons('HTML/CSS')">HTML/CSS</button>
+  <button class="cat-btn" onclick="showLessons('Java')">Java</button>
+  <button class="cat-btn" onclick="showLessons('Office')">Office</button>
+  <button class="cat-btn" onclick="showLessons('Excel Dashboard')">Excel Dashboard</button>
+  <button class="cat-btn" onclick="showLessons('Word Template')">Word Template</button>
 </div>
 
-<footer>© 2025 CODE STORE</footer>
+<div id="lessonsList" class="section"></div>
+
+<div style="text-align:center; margin-top:30px;">
+  <p>💳 Satın Alma</p>
+  <p>IBAN: <span id="iban" onclick="copyIban()">TR98000670100000022363236</span> (Tıklayarak kopyala)</p>
+  <p>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</p>
+</div>
+
+<div id="adminPanel">
+  <h2>🔑 Admin Paneli</h2>
+  <input type="text" id="lessonName" placeholder="Kod adı"><br>
+  <input type="text" id="lessonCategory" placeholder="Kategori"><br>
+  <input type="text" id="lessonPDF" placeholder="Dosya adı (kodlar/ klasörü içinde)"><br>
+  <button onclick="addLesson()">Kod Ekle</button>
+</div>
+
+<button id="neonAdminBtn" class="neon-admin-btn" onclick="toggleAdminPanel()">Admin Paneli</button>
+
+<p style="text-align:center; margin-top:50px;">© 2025 CODE STORE</p>
 
 <script>
 let lessons = [
-{kategori:"JavaScript",isim:"JS Slider",pdf:"kodlar/js-slider.pdf"},
-{kategori:"Python",isim:"Python Script",pdf:"kodlar/python-script.pdf"},
-{kategori:"HTML/CSS",isim:"Responsive Site",pdf:"kodlar/responsive.pdf"},
-{kategori:"Java",isim:"Java App",pdf:"kodlar/java-app.pdf"},
-{kategori:"Office",isim:"Excel Dashboard",pdf:"kodlar/excel-dashboard.pdf"}
+  {kategori:"JavaScript", isim:"JS Slider", pdf:"kodlar/js-slider.pdf"},
+  {kategori:"Python", isim:"Python Script", pdf:"kodlar/python-script.pdf"},
+  {kategori:"HTML/CSS", isim:"Responsive Site", pdf:"kodlar/responsive-site.pdf"},
+  {kategori:"Java", isim:"Java App", pdf:"kodlar/java-app.pdf"},
+  {kategori:"Office", isim:"Excel Dashboard", pdf:"kodlar/excel-dashboard.pdf"},
+  {kategori:"Office", isim:"Word Template", pdf:"kodlar/word-template.pdf"}
 ];
 
-function copyIban(){ navigator.clipboard.writeText(document.getElementById("iban").innerText).then(()=>alert("IBAN kopyalandı")) }
-
-function updateCategories(){
-  const catDiv = document.getElementById("categories");
-  catDiv.innerHTML = "";
-  let cats = [...new Set(lessons.map(l=>l.kategori))];
-  cats.forEach(c=>{
-    let b = document.createElement("button");
-    b.innerText = c;
-    b.onclick = ()=>showLessons(c);
-    catDiv.appendChild(b);
-  });
-}
-
 function showLessons(cat){
-  const listDiv = document.getElementById("lessonsList");
-  listDiv.innerHTML = "";
+  const listDiv=document.getElementById("lessonsList");
+  listDiv.innerHTML="";
   lessons.filter(l=>l.kategori===cat).forEach(l=>{
-    let div = document.createElement("div");
+    let div=document.createElement("div");
     div.className="lesson";
-    let nameSpan = document.createElement("span");
-    nameSpan.innerText = l.isim;
-    nameSpan.onclick = ()=>window.open(l.pdf,"_blank");
-    let buyBtn = document.createElement("button");
+    let nameSpan=document.createElement("span");
+    nameSpan.innerText=l.isim;
+    nameSpan.style.cursor="pointer";
+    nameSpan.onclick=()=>window.open(l.pdf,"_blank");
+    let buyBtn=document.createElement("button");
     buyBtn.innerText="Satın Al";
-    buyBtn.onclick = ()=>window.open(l.pdf,"_blank");
+    buyBtn.onclick=()=>window.open(l.pdf,"_blank");
     div.appendChild(nameSpan);
     div.appendChild(buyBtn);
     listDiv.appendChild(div);
   });
+  listDiv.style.display="block";
 }
 
+function copyIban(){
+  navigator.clipboard.writeText(document.getElementById("iban").innerText)
+  .then(()=>alert("IBAN kopyalandı"));
+}
+
+// Admin panelini sadece sen gör
+const urlParams = new URLSearchParams(window.location.search);
+if(urlParams.get('admin') === '1'){
+  document.getElementById("neonAdminBtn").style.display="block";
+}
+
+function toggleAdminPanel(){
+  const panel=document.getElementById("adminPanel");
+  panel.style.display=(panel.style.display==="block")?"none":"block";
+}
+
+// Ders ekleme
 function addLesson(){
-  const name = document.getElementById("lessonName").value.trim();
-  const cat = document.getElementById("lessonCategory").value;
-  const pdf = document.getElementById("lessonPDF").value.trim();
-  if(name && pdf){
+  const name=document.getElementById("lessonName").value.trim();
+  const cat=document.getElementById("lessonCategory").value.trim();
+  const pdf=document.getElementById("lessonPDF").value.trim();
+  if(name && cat && pdf){
     lessons.push({kategori:cat,isim:name,pdf:pdf});
-    updateCategories();
     alert("Kod eklendi!");
     document.getElementById("lessonName").value="";
+    document.getElementById("lessonCategory").value="";
     document.getElementById("lessonPDF").value="";
-  }else{ alert("Lütfen kod adı ve PDF dosya adını girin!"); }
+  }else{
+    alert("Lütfen tüm alanları doldurun!");
+  }
 }
-
-// Admin panelini sadece sen göreceksin
-if(new URLSearchParams(window.location.search).get("admin") === "1"){
-  document.getElementById("adminPanel").style.display="block";
-}
-
-window.onload = ()=>updateCategories();
 </script>
 
 </body>
