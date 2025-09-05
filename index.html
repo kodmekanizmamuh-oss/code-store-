@@ -3,88 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💻 CODE STORE</title>
+<title>CODE STORE</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-body {
-    margin:0; padding:0; font-family:'Montserrat',sans-serif;
-    background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
-    color:white; text-align:center;
-}
-header { font-size:40px; font-weight:700; padding:30px; text-shadow:0 0 10px #0ff,0 0 20px #0ff; }
-button {
-    cursor:pointer; padding:12px 22px; margin:8px; border:none; border-radius:12px;
-    font-weight:700; background: linear-gradient(90deg,#0ff,#1de9b6); color:#000;
-    transition: all 0.3s ease; animation: float 3s ease-in-out infinite;
-}
-button:hover { transform: translateY(-8px) scale(1.1); box-shadow:0 0 20px #0ff; }
-@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.container { max-width:1000px; margin:20px auto; padding:20px; background: rgba(0,0,0,0.7); border-radius:20px; }
-.info-box { padding:18px; border-radius:12px; margin-bottom:25px; background: rgba(0,0,0,0.3); box-shadow:0 0 15px #0ff; display:flex; flex-wrap:wrap; justify-content:center;}
-footer { text-align:center; padding:20px; margin-top:30px; background:#0f0c29; color:#0ff; font-weight:700; border-radius:0 0 20px 20px; }
-@media(max-width:768px){button{width:100%; margin:6px 0;}}
+  body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: #fff;
+    margin:0; padding:0;
+    text-align:center;
+  }
+  h1 { margin-top: 20px; color:#0ff; text-shadow:0 0 5px #0ff,0 0 10px #0ff; }
+  .category, .code-btn, #copyIbanBtn {
+    display:inline-block;
+    margin:10px;
+    padding:15px 25px;
+    border:none;
+    cursor:pointer;
+    font-size:16px;
+    color:#fff;
+    border-radius:10px;
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    box-shadow:0 0 10px #0ff, 0 0 20px #f0f;
+    transition: 0.3s;
+  }
+  .category:hover, .code-btn:hover, #copyIbanBtn:hover {
+    transform: scale(1.1);
+    box-shadow:0 0 20px #0ff, 0 0 30px #f0f;
+  }
+  #iban { margin-top:20px; font-weight:bold; color:#0ff; }
+  .hidden { display:none; }
+  #adminPanel {
+    background:#222; padding:20px; border-radius:15px; margin:20px auto;
+    width:90%; max-width:500px; text-align:left;
+  }
+  #adminPanel input, #adminPanel select { width:100%; margin:5px 0; padding:10px; border-radius:5px; border:none; }
+  #adminPanel button { width:100%; margin-top:10px; }
+  .code-list { margin-top:20px; }
+  .code-item { background:#333; margin:5px auto; padding:10px; border-radius:10px; max-width:400px; display:flex; justify-content:space-between; }
 </style>
 </head>
 <body>
 
-<header>💻 CODE STORE</header>
+<h1>💻 CODE STORE</h1>
+<p>KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!<br>
+İstediğiniz kodları görüntülemek ve satın almak için aşağıdaki kategorilere göz atabilirsiniz.</p>
 
-<div class="container" id="home">
-<h2>KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!</h2>
-<p>İstediğiniz kodları görüntülemek ve satın almak için aşağıdaki kategorilere göz atabilirsiniz.</p>
-<div id="categories" class="info-box"></div>
-<div id="codesList" class="info-box" style="flex-direction:column;"></div>
-<div class="info-box" style="flex-direction:column; align-items:flex-start;">
-    <span><b>IBAN:</b> <span id="iban">TR98000670100000022363236</span></span>
-    <button onclick="copyIban()">Kopyala</button>
-    <small>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</small>
+<div id="categories"></div>
+
+<div class="code-list" id="codesList"></div>
+
+<div id="purchase">
+  <h3>💳 Satın Alma</h3>
+  <p id="iban">IBAN: TR98000670100000022363236</p>
+  <button id="copyIbanBtn">Kopyala</button>
+  <p>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</p>
 </div>
-<footer>© 2025 CODE STORE</footer>
+
+<!-- Gizli admin paneli -->
+<div id="adminPanel" class="hidden">
+  <h3>🔑 Admin Paneli</h3>
+  <input type="password" id="adminPass" placeholder="Admin Şifre">
+  <button onclick="loginAdmin()">Giriş Yap</button>
+  <p id="loginResult"></p>
+  <div id="addCodeSection" class="hidden">
+    <input type="text" id="codeName" placeholder="Kod Adı">
+    <select id="codeCategory">
+      <option>JavaScript</option>
+      <option>Python</option>
+      <option>HTML/CSS</option>
+      <option>Java</option>
+      <option>Office</option>
+      <option>JS Slider</option>
+    </select>
+    <input type="text" id="codeFile" placeholder="Dosya adı (kodlar/ klasörü içinde)">
+    <button onclick="addCode()">Kod Ekle</button>
+  </div>
 </div>
 
 <script>
 let codes = [
-{kategori:"JavaScript", isim:"JS Slider", dosya:"kodlar/js-slider.pdf"},
-{kategori:"Python", isim:"Python Bot", dosya:"kodlar/python-bot.pdf"},
-{kategori:"HTML/CSS", isim:"Portfolio Template", dosya:"kodlar/portfolio.pdf"},
-{kategori:"Java", isim:"Java Banka Sistemi", dosya:"kodlar/java-bank.pdf"},
-{kategori:"Office", isim:"Excel Dashboard", dosya:"kodlar/excel-dashboard.pdf"},
-{kategori:"Office", isim:"Word Template", dosya:"kodlar/word-template.pdf"}
+  {kategori:"JavaScript", isim:"JS Slider", pdf:"kodlar/js-slider.pdf"},
+  {kategori:"Python", isim:"Python Örnek", pdf:"kodlar/python-example.pdf"},
+  {kategori:"HTML/CSS", isim:"Web Template", pdf:"kodlar/web-template.pdf"},
+  {kategori:"Java", isim:"Java Calculator", pdf:"kodlar/java-calculator.pdf"},
+  {kategori:"Office", isim:"Excel Dashboard", pdf:"kodlar/excel-dashboard.pdf"}
 ];
 
-function copyIban(){navigator.clipboard.writeText(document.getElementById("iban").innerText).then(()=>alert("IBAN kopyalandı"));}
+// Admin şifre
+const ADMIN_PASSWORD = "1234";
 
+// Butonlarla kategorileri oluştur
 function updateCategories(){
-    const catDiv=document.getElementById("categories");
-    catDiv.innerHTML="";
-    let cats=[...new Set(codes.map(c=>c.kategori))];
-    cats.forEach(c=>{
-        let b=document.createElement("button");
-        b.innerText=c;
-        b.onclick=()=>showCodes(c);
-        catDiv.appendChild(b);
-    });
+  const catDiv = document.getElementById("categories");
+  catDiv.innerHTML = "";
+  let cats = [...new Set(codes.map(c=>c.kategori))];
+  cats.forEach(cat=>{
+    let btn = document.createElement("button");
+    btn.className = "category";
+    btn.innerText = cat;
+    btn.onclick = ()=>showCodes(cat);
+    catDiv.appendChild(btn);
+  });
 }
 
+// Seçilen kategoriye göre kodları göster
 function showCodes(cat){
-    const listDiv=document.getElementById("codesList");
-    listDiv.innerHTML="";
-    codes.filter(c=>c.kategori===cat).forEach(c=>{
-        let div=document.createElement("div");
-        div.style.display="flex"; div.style.justifyContent="space-between"; div.style.alignItems="center";
-        div.style.padding="10px"; div.style.margin="5px 0"; div.style.background="rgba(0,255,255,0.1)"; div.style.borderRadius="8px";
-        let nameSpan=document.createElement("span");
-        nameSpan.innerText=c.isim;
-        nameSpan.style.cursor="pointer"; nameSpan.onclick=()=>window.open(c.dosya,"_blank");
-        let buyBtn=document.createElement("button");
-        buyBtn.innerText="Satın Al";
-        buyBtn.onclick=()=>window.open(c.dosya,"_blank");
-        div.appendChild(nameSpan); div.appendChild(buyBtn);
-        listDiv.appendChild(div);
-    });
+  const list = document.getElementById("codesList");
+  list.innerHTML = "";
+  codes.filter(c=>c.kategori===cat).forEach(c=>{
+    let div = document.createElement("div");
+    div.className = "code-item";
+    div.innerHTML = `<span>${c.isim}</span><button class="code-btn" onclick="window.open('${c.pdf}','_blank')">Satın Al</button>`;
+    list.appendChild(div);
+  });
 }
 
-window.onload=()=>updateCategories();
+// IBAN kopyalama
+document.getElementById("copyIbanBtn").onclick = ()=> {
+  navigator.clipboard.writeText(document.getElementById("iban").innerText)
+  .then(()=>alert("IBAN kopyalandı"));
+};
+
+// Admin girişi
+function loginAdmin(){
+  const pass = document.getElementById("adminPass").value;
+  if(pass === ADMIN_PASSWORD){
+    document.getElementById("loginResult").innerText = "✅ Giriş başarılı!";
+    document.getElementById("addCodeSection").classList.remove("hidden");
+  } else {
+    document.getElementById("loginResult").innerText = "❌ Hatalı şifre!";
+  }
+}
+
+// Kod ekleme
+function addCode(){
+  const isim = document.getElementById("codeName").value.trim();
+  const kategori = document.getElementById("codeCategory").value;
+  const pdf = document.getElementById("codeFile").value.trim();
+  if(isim && pdf){
+    codes.push({kategori:kategori, isim:isim, pdf:pdf});
+    updateCategories();
+    alert("Kod eklendi!");
+    document.getElementById("codeName").value="";
+    document.getElementById("codeFile").value="";
+  } else {
+    alert("Lütfen tüm alanları doldurun!");
+  }
+}
+
+// Sayfa yüklendiğinde kategorileri oluştur
+window.onload = updateCategories;
 </script>
 
 </body>
