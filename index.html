@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💻 CODE STORE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+body {
+    margin:0; padding:0; font-family:'Montserrat',sans-serif;
+    background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+    color:white; text-align:center;
+}
+header { font-size:40px; font-weight:700; padding:30px; text-shadow:0 0 10px #0ff,0 0 20px #0ff; }
+button {
+    cursor:pointer; padding:12px 22px; margin:8px; border:none; border-radius:12px;
+    font-weight:700; background: linear-gradient(90deg,#0ff,#1de9b6); color:#000;
+    transition: all 0.3s ease; animation: float 3s ease-in-out infinite;
+}
+button:hover { transform: translateY(-8px) scale(1.1); box-shadow:0 0 20px #0ff; }
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.container { max-width:1000px; margin:20px auto; padding:20px; background: rgba(0,0,0,0.7); border-radius:20px; }
+.info-box { padding:18px; border-radius:12px; margin-bottom:25px; background: rgba(0,0,0,0.3); box-shadow:0 0 15px #0ff; display:flex; flex-wrap:wrap; justify-content:center;}
+footer { text-align:center; padding:20px; margin-top:30px; background:#0f0c29; color:#0ff; font-weight:700; border-radius:0 0 20px 20px; }
+@media(max-width:768px){button{width:100%; margin:6px 0;}}
+</style>
+</head>
+<body>
+
+<header>💻 CODE STORE</header>
+
+<div class="container" id="home">
+<h2>KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!</h2>
+<p>İstediğiniz kodları görüntülemek ve satın almak için aşağıdaki kategorilere göz atabilirsiniz.</p>
+<div id="categories" class="info-box"></div>
+<div id="codesList" class="info-box" style="flex-direction:column;"></div>
+<div class="info-box" style="flex-direction:column; align-items:flex-start;">
+    <span><b>IBAN:</b> <span id="iban">TR98000670100000022363236</span></span>
+    <button onclick="copyIban()">Kopyala</button>
+    <small>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</small>
+</div>
+<footer>© 2025 CODE STORE</footer>
+</div>
+
+<script>
+let codes = [
+{kategori:"JavaScript", isim:"JS Slider", dosya:"kodlar/js-slider.pdf"},
+{kategori:"Python", isim:"Python Bot", dosya:"kodlar/python-bot.pdf"},
+{kategori:"HTML/CSS", isim:"Portfolio Template", dosya:"kodlar/portfolio.pdf"},
+{kategori:"Java", isim:"Java Banka Sistemi", dosya:"kodlar/java-bank.pdf"},
+{kategori:"Office", isim:"Excel Dashboard", dosya:"kodlar/excel-dashboard.pdf"},
+{kategori:"Office", isim:"Word Template", dosya:"kodlar/word-template.pdf"}
+];
+
+function copyIban(){navigator.clipboard.writeText(document.getElementById("iban").innerText).then(()=>alert("IBAN kopyalandı"));}
+
+function updateCategories(){
+    const catDiv=document.getElementById("categories");
+    catDiv.innerHTML="";
+    let cats=[...new Set(codes.map(c=>c.kategori))];
+    cats.forEach(c=>{
+        let b=document.createElement("button");
+        b.innerText=c;
+        b.onclick=()=>showCodes(c);
+        catDiv.appendChild(b);
+    });
+}
+
+function showCodes(cat){
+    const listDiv=document.getElementById("codesList");
+    listDiv.innerHTML="";
+    codes.filter(c=>c.kategori===cat).forEach(c=>{
+        let div=document.createElement("div");
+        div.style.display="flex"; div.style.justifyContent="space-between"; div.style.alignItems="center";
+        div.style.padding="10px"; div.style.margin="5px 0"; div.style.background="rgba(0,255,255,0.1)"; div.style.borderRadius="8px";
+        let nameSpan=document.createElement("span");
+        nameSpan.innerText=c.isim;
+        nameSpan.style.cursor="pointer"; nameSpan.onclick=()=>window.open(c.dosya,"_blank");
+        let buyBtn=document.createElement("button");
+        buyBtn.innerText="Satın Al";
+        buyBtn.onclick=()=>window.open(c.dosya,"_blank");
+        div.appendChild(nameSpan); div.appendChild(buyBtn);
+        listDiv.appendChild(div);
+    });
+}
+
+window.onload=()=>updateCategories();
+</script>
+
+</body>
+</html>
