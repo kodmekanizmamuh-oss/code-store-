@@ -3,147 +3,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CODE STORE</title>
+<title>💻 CODE STORE</title>
 <style>
-body { margin:0; font-family:'Segoe UI',sans-serif; background:#0a0a0a; color:#fff; text-align:center; }
-header { padding:30px; background: linear-gradient(90deg,#1a1a1a,#222); box-shadow:0 0 20px #0ff;}
-h1 { font-size:2.5em; color:#0ff; text-shadow:0 0 10px #0ff; }
-p { margin:10px 0;}
-button { padding:10px 20px; margin:10px; border:none; border-radius:10px; cursor:pointer; font-weight:bold; color:#fff;}
-.neon { background: linear-gradient(90deg,#0ff,#f0f); box-shadow:0 0 10px #0ff,0 0 20px #f0f; animation:glow 1.5s infinite alternate;}
-@keyframes glow { 0%{box-shadow:0 0 10px #0ff,0 0 20px #f0f;} 100%{box-shadow:0 0 20px #0ff,0 0 40px #f0f;} }
-.section { padding:20px;}
-input, select { padding:8px; margin:5px; border-radius:5px; border:none;}
-#iban { background:#222; padding:5px 10px; border-radius:5px; display:inline-block; cursor:pointer;}
-.lesson { display:flex; justify-content:center; align-items:center; gap:20px; margin:10px;}
-.lesson span { cursor:pointer; font-weight:bold; text-decoration:underline;}
-#adminPanel { display:none; margin-top:20px; }
+    body {
+        margin:0;
+        font-family: 'Segoe UI', sans-serif;
+        background: #0f0f0f;
+        color: #f0f0f0;
+        text-align:center;
+    }
+    h1 {
+        font-size:2rem;
+        margin:20px 0;
+        color:#00ffff;
+        text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+    }
+    .btn {
+        display:inline-block;
+        margin:10px;
+        padding:15px 30px;
+        font-size:1rem;
+        font-weight:bold;
+        color:#fff;
+        background: linear-gradient(90deg,#ff00ff,#00ffff,#ff0000);
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        transition:0.3s;
+        text-decoration:none;
+    }
+    .btn:hover {
+        transform: scale(1.1);
+        text-shadow:0 0 10px #fff;
+    }
+    .section { display:none; padding:20px; }
+    #home { display:block; }
+    input[type=password] {
+        padding:10px;
+        border-radius:5px;
+        border:none;
+        width:200px;
+        margin-right:10px;
+    }
+    .lesson, .category-btn {
+        margin:10px;
+        display:inline-block;
+    }
+    #iban { cursor:pointer; color:#00ffff; text-decoration:underline; }
+    .admin-panel { display:none; margin-top:20px; }
 </style>
 </head>
 <body>
 
-<header>
-<h1>💻 CODE STORE</h1>
-<p>KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!</p>
-</header>
+<h1>💻 KOD SATIŞ PORTALIMIZA HOŞGELDİNİZ!</h1>
 
-<!-- Admin Girişi Anasayfa -->
-<div>
-<input type="password" id="adminPass" placeholder="Admin şifrenizi girin">
-<button class="neon" onclick="loginAdmin()">Admin Girişi</button>
-<p id="loginResult"></p>
+<div id="home" class="section">
+    <button class="btn" onclick="show('categoriesSection')">Kodları Görüntüle</button>
+    <button class="btn" onclick="show('adminSection')">Admin Girişi</button>
 </div>
 
-<!-- Admin Paneli -->
-<div id="adminPanel">
-<h2>🔑 Admin Paneli</h2>
-<input type="text" id="lessonName" placeholder="Kod Adı">
-<select id="lessonCategory">
-<option>JavaScript</option>
-<option>Python</option>
-<option>HTML/CSS</option>
-<option>Java</option>
-<option>Office</option>
-</select>
-<input type="text" id="lessonPDF" placeholder="PDF Dosya Adı (kodlar/ klasörü içinde)">
-<button class="neon" onclick="addLesson()">Kod Ekle</button>
+<div id="categoriesSection" class="section">
+    <h2>📂 Kod Kategorileri</h2>
+    <div id="categories"></div>
+    <button class="btn" onclick="show('home')">← Ana Sayfaya Dön</button>
 </div>
 
-<!-- Kategoriler -->
-<div id="categories" class="section"></div>
-
-<!-- Kod Listesi -->
-<div id="lessonsList" class="section"></div>
-
-<!-- Satın Alma -->
-<div class="section">
-<h3>💳 Satın Alma</h3>
-<p>IBAN: <span id="iban">TR98000670100000022363236</span> (Tıklayarak kopyala)</p>
-<p>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</p>
+<div id="adminSection" class="section">
+    <h2>🔑 Admin Girişi</h2>
+    <input type="password" id="adminPass" placeholder="Şifreyi Gir">
+    <button class="btn" onclick="loginAdmin()">Giriş Yap</button>
+    <p id="loginResult"></p>
+    <div id="lessonAdd" class="admin-panel">
+        <h3>🔧 Kod Ekle</h3>
+        <input type="text" id="lessonName" placeholder="Kod Adı">
+        <select id="lessonCategory">
+            <option>JavaScript</option>
+            <option>Python</option>
+            <option>HTML/CSS</option>
+            <option>Java</option>
+            <option>Office</option>
+        </select>
+        <input type="text" id="lessonPDF" placeholder="Dosya Adı (kodlar/ klasörü içinde)">
+        <button class="btn" onclick="addLesson()">Kod Ekle</button>
+    </div>
+    <button class="btn" onclick="show('home')">← Ana Sayfaya Dön</button>
 </div>
 
-<footer>© 2025 CODE STORE</footer>
+<div id="purchase" class="section">
+    <h2>💳 Satın Alma</h2>
+    <p>IBAN: <span id="iban">TR98000670100000022363236</span> (Tıklayarak kopyala)</p>
+    <p>Ödeme açıklamasına satın aldığınız kodun adını yazınız.</p>
+    <button class="btn" onclick="show('home')">← Ana Sayfaya Dön</button>
+</div>
+
+<footer style="margin-top:30px;">© 2025 CODE STORE</footer>
 
 <script>
-let lessons = [
-{kategori:"JavaScript",isim:"JS Slider",pdf:"kodlar/js-slider.pdf"},
-{kategori:"Python",isim:"Python Script",pdf:"kodlar/python-script.pdf"},
-{kategori:"HTML/CSS",isim:"Responsive Site",pdf:"kodlar/responsive-site.pdf"},
-{kategori:"Java",isim:"Java App",pdf:"kodlar/java-app.pdf"},
-{kategori:"Office",isim:"Excel Dashboard",pdf:"kodlar/excel-dashboard.pdf"}
-];
+// Show section
+function show(id){
+    document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+    document.getElementById(id).style.display='block';
+}
 
-// IBAN kopyalama
-document.getElementById("iban").onclick = ()=>{
-navigator.clipboard.writeText(document.getElementById("iban").innerText).then(()=>alert("IBAN kopyalandı"));
-};
+// Copy IBAN
+document.getElementById("iban").addEventListener("click",()=>{
+    navigator.clipboard.writeText(document.getElementById("iban").innerText)
+    .then(()=>alert("IBAN kopyalandı!"));
+});
 
-// Kategorileri listele
+// Lessons array
+let lessons = [];
+
+// Categories
 function updateCategories(){
-const catDiv=document.getElementById("categories");
-catDiv.innerHTML="";
-let cats=[...new Set(lessons.map(l=>l.kategori))];
-cats.forEach(c=>{
-let b=document.createElement("button");
-b.className="neon";
-b.innerText=c;
-b.onclick=()=>showLessons(c);
-catDiv.appendChild(b);
-});
+    const catDiv = document.getElementById("categories");
+    catDiv.innerHTML = "";
+    let cats = [...new Set(lessons.map(l=>l.kategori))];
+    cats.forEach(c=>{
+        let b = document.createElement("button");
+        b.className="category-btn btn";
+        b.innerText=c;
+        b.onclick=()=>showLessons(c);
+        catDiv.appendChild(b);
+    });
 }
 
-// Kodları göster
+// Show lessons
 function showLessons(cat){
-const listDiv=document.getElementById("lessonsList");
-listDiv.innerHTML="";
-lessons.filter(l=>l.kategori===cat).forEach(l=>{
-let div=document.createElement("div");
-div.className="lesson";
-let nameSpan=document.createElement("span");
-nameSpan.innerText=l.isim;
-nameSpan.onclick=()=>window.open(l.pdf,"_blank");
-let buyBtn=document.createElement("button");
-buyBtn.className="neon";
-buyBtn.innerText="Satın Al";
-buyBtn.onclick=()=>window.open(l.pdf,"_blank");
-div.appendChild(nameSpan);
-div.appendChild(buyBtn);
-listDiv.appendChild(div);
-});
+    const catDiv = document.getElementById("categories");
+    catDiv.innerHTML = "";
+    lessons.filter(l=>l.kategori===cat).forEach(l=>{
+        let div = document.createElement("div");
+        div.className="lesson";
+        let nameSpan = document.createElement("span");
+        nameSpan.innerText = l.isim + " ";
+        let buyBtn = document.createElement("button");
+        buyBtn.innerText = "Satın Al";
+        buyBtn.className="btn";
+        buyBtn.onclick=()=>window.open(l.pdf,"_blank");
+        div.appendChild(nameSpan);
+        div.appendChild(buyBtn);
+        catDiv.appendChild(div);
+    });
+    let backBtn = document.createElement("button");
+    backBtn.className="btn";
+    backBtn.innerText="← Kategorilere Dön";
+    backBtn.onclick=()=>updateCategories();
+    catDiv.appendChild(backBtn);
 }
 
-// Admin girişi
+// Admin login
 function loginAdmin(){
-const pass=document.getElementById("adminPass").value;
-if(pass==="Doruksait2727+"){
-document.getElementById("loginResult").style.color="lime";
-document.getElementById("loginResult").innerText="✅ Giriş başarılı!";
-document.getElementById("adminPanel").style.display="block";
-document.getElementById("adminPass").style.display="none";
-}else{
-document.getElementById("loginResult").style.color="red";
-document.getElementById("loginResult").innerText="❌ Hatalı şifre!";
-}
+    const pass = document.getElementById("adminPass").value;
+    if(pass==="Doruksait2727+"){
+        document.getElementById("loginResult").style.color="lime";
+        document.getElementById("loginResult").innerText="✅ Giriş başarılı!";
+        document.getElementById("lessonAdd").style.display="block";
+    } else {
+        document.getElementById("loginResult").style.color="red";
+        document.getElementById("loginResult").innerText="❌ Hatalı şifre!";
+    }
 }
 
-// Kod ekleme
+// Add lesson
 function addLesson(){
-const name=document.getElementById("lessonName").value.trim();
-const cat=document.getElementById("lessonCategory").value;
-const pdf=document.getElementById("lessonPDF").value.trim();
-if(name && pdf){
-lessons.push({kategori:cat,isim:name,pdf:pdf});
-updateCategories();
-alert("Kod eklendi!");
-document.getElementById("lessonName").value="";
-document.getElementById("lessonPDF").value="";
-}else{
-alert("Lütfen kod adı ve PDF dosya adını girin!");
-}
+    const name = document.getElementById("lessonName").value.trim();
+    const cat = document.getElementById("lessonCategory").value;
+    const pdf = document.getElementById("lessonPDF").value.trim();
+    if(name && pdf){
+        lessons.push({kategori:cat,isim:name,pdf:pdf});
+        updateCategories();
+        alert("Kod eklendi!");
+        document.getElementById("lessonName").value="";
+        document.getElementById("lessonPDF").value="";
+    } else {
+        alert("Lütfen Kod Adı ve Dosya Adı girin!");
+    }
 }
 
-window.onload = ()=>{ updateCategories(); };
+// On load
+window.onload=()=>updateCategories();
 </script>
 
 </body>
 </html>
+
